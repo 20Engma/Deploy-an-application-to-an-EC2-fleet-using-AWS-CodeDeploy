@@ -7,10 +7,12 @@ Objectives
 By completing this project, you will be able to:
 
 Perform systematic deployments to a fleet of EC2 instances using AWS CodeDeploy.
+
 Verify that the CodeDeploy agent is installed and running on a Windows server.
+
 Create a deployment application and deployment group in CodeDeploy.
+
 Review and prepare a deployment package for installation via CodeDeploy.
+
 Monitor deployment status and deployment targets using AWS CodeDeploy.
-Prerequisites
-Basic knowledge of navigating the AWS Management Console.
-Familiarity with editing scripts using a text editor.
+
