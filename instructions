@@ -1,0 +1,85 @@
+Here's the project formatted as step-by-step instructions for your GitHub README file:
+
+---
+
+# AWS CodeDeploy Project: HeartBeat Application Deployment to EC2 Instances
+
+## Project Steps:
+
+### 1. Verify CodeDeploy Agent
+- Ensure the **CodeDeploy agent** is installed and running on the **HeartBeat-Instances**.
+- In the EC2 Management Console, navigate to **Instances**, select **Heartbeat-Instance**, and click **Connect**.
+- In the PowerShell CLI, verify the agent by running:
+
+```bash
+powershell.exe -Command Get-Service -Name codedeployagent
+```
+
+### 2. Review CodeDeploy Service Role Permissions
+- In the **AWS Management Console**, search for **IAM**.
+- Under **Roles**, locate **CodeDeployServiceRole** and ensure the **AWSCodeDeployRole** policy is attached.
+
+### 3. Create Deployment Application
+- In **CodeDeploy**, create a new application named `HeartBeatProduction-App`.
+- Select **EC2/on-premises** as the compute platform.
+
+### 4. Create Deployment Group
+- In **CodeDeploy**, create a deployment group named `HeartBeatProduction-App-Group`.
+- Select **CodeDeployServiceRole** for the service role.
+- Select **Amazon EC2 instances**, filter by the **Name** tag `HeartBeat-Instance`.
+- Ensure **CodeDeployDefault.AllAtOnce** is selected for deployment configuration.
+
+### 5. Connect to AWS Cloud9 IDE
+- Use **AWS Cloud9** as the development environment.
+
+### 6. Review Source Code and `appspec.yml` File
+- Check the application's source code and ensure the `appspec.yml` file is correctly configured for the deployment.
+
+### 7. Push Application to S3
+- In the **Cloud9 terminal**, run the following to create an S3 bucket and push the application:
+
+```bash
+bucketName=heartbeat-codedeploy-artifacts-[your-initials]-[your-postal-code]
+aws s3 mb s3://$bucketName
+```
+
+- Then, bundle the application and push it to the S3 bucket:
+
+```bash
+aws deploy push --application-name HeartBeatProduction-App --source HeartBeat-App --s3-location s3://$bucketName/HeartBeat-App.zip
+```
+
+### 8. Deploy Application Revision
+- Deploy the application revision from the S3 bucket to EC2 instances:
+
+```bash
+aws deploy create-deployment --application-name HeartBeatProduction-App --deployment-group-name HeartBeatProduction-App-Group --deployment-config-name CodeDeployDefault.AllAtOnce --description "Initial Deployment" --s3-location bucket=$bucketName,key=HeartBeat-App.zip,bundleType=zip
+```
+
+### 9. Monitor Deployment Status
+- Monitor the deployment via **CodeDeploy** in the **AWS Management Console**.
+
+### 10. Review Deployment Targets
+- Connect to one of the **HeartBeat-Instances** using **Session Manager** to verify the deployment:
+
+```bash
+Content C:\Logs\HeartBeatService.log -last 10
+```
+
+### 11. Deploy Updates
+- Return to **Cloud9**, update the application, and bundle the files:
+
+```bash
+cd ~/environment/Updated-HeartBeat-App
+aws deploy push --application-name HeartBeatProduction-App --source HeartBeat-App --s3-location s3://$bucketName/HeartBeat-App.zip
+```
+
+- Create a new deployment:
+
+```bash
+aws deploy create-deployment --application-name HeartBeatProduction-App --deployment-group-name HeartBeatProduction-App-Group --deployment-config-name CodeDeployDefault.AllAtOnce --description "Updated Deployment" --s3-location bucket=$bucketName,key=HeartBeat-App.zip,bundleType=zip
+```
+
+---
+
+This version provides clear, organized steps to guide users through the project. You can copy this into your GitHub README file.
